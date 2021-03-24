@@ -33,9 +33,6 @@ export default function App() {
           <Route path="/class">
             <Class />
           </Route>
-          <Route path="/Hellooo">
-            QWERTY
-          </Route>
           <Route path="/">
             <Home />
           </Route>
