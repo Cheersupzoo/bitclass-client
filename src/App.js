@@ -28,6 +28,7 @@ export default function App() {
             renders the first one that matches the current URL. */}
         <Switch>
           <Route path="/about">
+            {/* This is about path */}
             <About />
           </Route>
           <Route path="/class">
