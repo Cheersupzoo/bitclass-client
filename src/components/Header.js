@@ -7,6 +7,7 @@ import { Link } from "react-router-dom";
 import { SiGoogle } from "react-icons/si";
 import firebase from "firebase";
 import { useAppContext, useDispatchContext } from "../state/auth";
+import API from "../services/api";
 
 export default function Header() {
   const { accessToken } = useAppContext();
@@ -39,10 +40,12 @@ export default function Header() {
 
         try {
           // @ts-ignore
-          // var res = await API.signin("google", idToken, result.additionalUserInfo.profile.email, result.additionalUserInfo.profile.name)
+          var res = await API.signin("google", idToken, result.additionalUserInfo.profile.email, result.additionalUserInfo.profile.name)
+          console.log(res);
+          if(!res.data.Authorization) return;
           dispatch({
             type: "LOGIN",
-            payload: idToken,
+            payload: res.data.Authorization,
           });
           window.location.assign(`/`);
         } catch (error) {}
