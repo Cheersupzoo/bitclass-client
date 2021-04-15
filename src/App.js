@@ -1,4 +1,5 @@
 import React from "react";
+import 'bootstrap/dist/css/bootstrap.min.css';
 import {
   BrowserRouter as Router,
   Switch,
@@ -6,23 +7,16 @@ import {
   Link
 } from "react-router-dom";
 
+import Home from "./pages/Index"
+import Class from "./pages/Class"
+import About from "./pages/About"
+import Header from "./components/Header"
+
 export default function App() {
   return (
     <Router>
       <div>
-        <nav>
-          <ul>
-            <li>
-              <Link to="/">Home</Link>
-            </li>
-            <li>
-              <Link to="/about">About</Link>
-            </li>
-            <li>
-              <Link to="/class">Class</Link>
-            </li>
-          </ul>
-        </nav>
+        <Header/>
 
         {/* A <Switch> looks through its children <Route>s and
             renders the first one that matches the current URL. */}
@@ -31,7 +25,7 @@ export default function App() {
             {/* This is about path */}
             <About />
           </Route>
-          <Route path="/class">
+          <Route path="/class/:classId">
             <Class />
           </Route>
           <Route path="/">
@@ -43,14 +37,6 @@ export default function App() {
   );
 }
 
-function Home() {
-  return <h2>Home</h2>;
-}
 
-function About() {
-  return <h2>About</h2>;
-}
 
-function Class() {
-  return <h2>Class</h2>;
-}
+
