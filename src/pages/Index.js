@@ -1,5 +1,7 @@
 import { useAppContext, useDispatchContext } from "../state/auth";
 import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import { useEffect, useState } from "react";
+import API from "../services/api";
 export default function Home() {
   const { accessToken } = useAppContext();
 
@@ -30,15 +32,31 @@ function WoLogin() {
 }
 
 function WLogin() {
+  const [loading, setLoading] = useState(true)
+  const [classes, setClasses] = useState([])
+  useEffect(() => {
+    init();
+    return () => {};
+  }, []);
+  async function init() {
+    var userInfo = await API.getUserDetail();
+    // console.log(userInfo);
+    var classesInfo = await API.getClassesDetail(userInfo.classes);
+    console.log(classesInfo);
+    setClasses(classesInfo);
+    setLoading(false);
+  }
   return (
     <div className="container pt-4">
       <div className="row">
         <h2>Your Class</h2>
       </div>
       <div className="row">
-        {["Class 1", "Class 2", "Class 3", "Class 4"].map((e) => (
-          <div class="col-md-4">
-            <Link to={`/class/${e}`}>
+        { loading ? <div>loading</div> :
+        
+        classes.map((classroom) => (
+          <div key={classroom.cid} class="col-md-4">
+            <Link to={`/class/${classroom.cid}`}>
               <div class="card mb-4 box-shadow">
                 <img
                   class="card-img-top"
@@ -49,7 +67,7 @@ function WLogin() {
                   data-holder-rendered="true"
                 />
                 <div class="card-body">
-                  <p class="card-text">{e}</p>
+                  <p class="card-text">{classroom.name}</p>
                 </div>
               </div>
             </Link>

@@ -8,15 +8,34 @@ import { SiGoogle } from "react-icons/si";
 import firebase from "firebase";
 import { useAppContext, useDispatchContext } from "../state/auth";
 import API from "../services/api";
+import { useState, useEffect } from "react";
 
 export default function Header() {
   const { accessToken } = useAppContext();
   const dispatch = useDispatchContext();
+  const [name, setName] = useState("");
   function logout() {
     dispatch({
       type: "LOGOUT",
     });
   }
+
+  useEffect(() => {
+    loadUserDetail();
+    return () => {
+    }
+  }, [])
+
+  async function loadUserDetail() {
+    console.log("useEffect");
+    const accessToken = window.localStorage.getItem("token")
+    if(!(accessToken === undefined || accessToken === null)){
+      console.log(accessToken);
+      let user = await API.getUserDetail();
+      setName(user.name);
+    }
+  }
+
   function firebaseSignin() {
     var provider = new firebase.auth.GoogleAuthProvider();
     // provider.addScope('https://www.googleapis.com/auth/contacts.readonly');
@@ -40,9 +59,14 @@ export default function Header() {
 
         try {
           // @ts-ignore
-          var res = await API.signin("google", idToken, result.additionalUserInfo.profile.email, result.additionalUserInfo.profile.name)
+          var res = await API.signin(
+            "google",
+            idToken,
+            result.additionalUserInfo.profile.email,
+            result.additionalUserInfo.profile.name
+          );
           console.log(res);
-          if(!res.data.Authorization) return;
+          if (!res.data.Authorization) return;
           dispatch({
             type: "LOGIN",
             payload: res.data.Authorization,
@@ -101,7 +125,14 @@ export default function Header() {
         </Nav>
         <Navbar.Text>
           {!(accessToken === undefined || accessToken === null) ? (
-            <Button variant="link" onClick={logout}>Logout</Button>
+            <>
+              <span class="navbar-text pr-2">
+              {name}
+            </span>
+              <Button variant="link" onClick={logout}>
+                Logout
+              </Button>
+            </>
           ) : (
             <OverlayTrigger
               trigger="click"
