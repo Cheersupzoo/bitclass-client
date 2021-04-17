@@ -33,7 +33,10 @@ export default function Class() {
       ) : (
         <>
           <h2>Class {classroom.name}</h2>
-          <h6>{classroom.code}</h6>
+          <div className="row">
+            <h5 className="pr-2">{classroom.code}</h5>
+            <h6>{classId}</h6>
+          </div>
           <ButtonGroup aria-label="Basic example">
             <Button
               variant={tab === 0 ? "secondary" : "primary"}
@@ -87,7 +90,7 @@ function Detail({ classroom }) {
         studentInfos.push(studentInfo);
       })
     );
-    setStudents(studentInfos)
+    setStudents(studentInfos);
     setLoading(false);
   }
   return (
