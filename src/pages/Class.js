@@ -10,13 +10,31 @@ import { useEffect, useState } from "react";
 import API from "../services/api";
 import Button from "react-bootstrap/Button";
 import ButtonGroup from "react-bootstrap/ButtonGroup";
+import Peer from "peerjs";
+import { nanoid } from "nanoid";
+import { Map } from "immutable";
+import Form from "react-bootstrap/Form";
+import Card from "react-bootstrap/Card";
+var clientConnections;
+
+var hostConnection;
+
+var peerId = "000";
+var peer;
+var user = {};
 export default function Class() {
   let { classId } = useParams();
   const [loading, setLoading] = useState(true);
   const [classroom, setClassroom] = useState({});
   const [tab, setTab] = useState(0); // 0 = Feed; 1 = File; 2 = Detail
+
+  const [peerList, setPeerList] = useState([]);
+
+  const [peerConnectionStatus, setPeerConnectionStatus] = useState(0); // 0 = initializing; 1 = connected; 2 = disonnect; 3 = connected as Host
+  const [feeds, setFeeds] = useState([]);
   useEffect(() => {
     init();
+    initPeerJS();
     return () => {};
   }, []);
   async function init() {
@@ -26,14 +44,213 @@ export default function Class() {
     setClassroom(classesInfo);
     setLoading(false);
   }
+
+  async function initPeerJS() {
+    clientConnections = Map({});
+    const accessToken = window.localStorage.getItem("token");
+    if (!(accessToken === undefined || accessToken === null)) {
+      console.log("set user");
+      user = await API.getUserDetail();
+      peerId = user.id;
+    }
+
+    peer = new Peer(peerId, {
+      host: "bitclass-peerjs.herokuapp.com",
+      port: 443,
+      path: "/myapp",
+      secure: true,
+    });
+
+    peer.on("open", (id) => {
+      console.log("Connection to signaller establised.");
+      console.log(`Assigning id: ${id}`);
+
+      hostConnection = peer.connect(classId);
+      console.log("connecting");
+
+      updatePeerList();
+
+      hostConnection.on("open", () => {
+        console.log(`Connection to ${hostConnection.peer} established.`);
+        setPeerConnectionStatus(1); // connected
+
+        hostConnection.on("data", (data) => {
+          console.log("Recvied data:\n", data);
+
+          if (data.type === "peer") {
+            updatePeerList(data.peers);
+          }
+
+          updateClassData(data);
+        });
+
+        hostConnection.on("close", () => {
+          console.log(`Connection to ${hostConnection.peer} is closed.`);
+
+          peer.destroy();
+          setPeerConnectionStatus(2);
+          // window.reload();
+        });
+      });
+    });
+
+    setupPeerListener();
+
+    peer.on("error", (error) => {
+      console.log(error);
+      setPeerConnectionStatus(2); // Disconnect
+      if (error.message.includes("Could not connect to peer")) {
+        hostPeerSession();
+      }
+    });
+  }
+
+  async function hostPeerSession() {
+    console.log("Host not init yet");
+    peerId = classId;
+    peer = new Peer(peerId, {
+      host: "bitclass-peerjs.herokuapp.com",
+      port: 443,
+      path: "/myapp",
+      secure: true,
+    });
+
+    peer.on("open", (id) => {
+      console.log("Connection to signaller establised.");
+      console.log(`Assigning id: ${id}`);
+    });
+    setPeerConnectionStatus(3); // connected as Host
+
+    setupPeerListener();
+  }
+
+  function setupPeerListener() {
+    peer.on("connection", (connection) => {
+      console.log(`${connection.peer} attempting to establish connection.`);
+
+      connection.on("open", () => {
+        console.log(`Connection to ${connection.peer} established.`);
+
+        clientConnections = clientConnections.set(connection.peer, connection);
+
+        const data = {
+          sender: "SYSTEM",
+          type: "peer",
+          // message: `${connection.peer} joined.`,
+        };
+
+        updatePeerList();
+        // updateClassData(data);
+
+        broadcast({
+          ...data,
+          peers: generatePeerList(),
+        });
+      });
+
+      connection.on("data", (data) => {
+        console.log("Recvied data:\n", data);
+
+        updateClassData(data);
+
+        broadcast({
+          ...data,
+          peers: generatePeerList(),
+        });
+      });
+
+      connection.on("close", () => {
+        console.log(`Connection to ${connection.peer} is closed.`);
+        clientConnections = clientConnections.delete(
+          connection.peer.toString()
+        );
+
+        const data = {
+          sender: "SYSTEM",
+          type: "peer",
+          // message: `${connection.peer} left.`,
+        };
+
+        updatePeerList();
+        // updateClassData(data);
+
+        broadcast({
+          ...data,
+          peers: generatePeerList(),
+        });
+
+        // document.getElementById("hostId").innerText = "NOT CONNECTED TO ANYONE";
+      });
+    });
+
+    peer.on("disconnected", () => {
+      console.log("Disconnected from signaller.");
+      setPeerConnectionStatus(2); // Disconnect
+    });
+  }
+
+  function updatePeerList(peerList) {
+    setPeerList(peerList ? peerList : generatePeerList());
+  }
+
+  function generatePeerList() {
+    return clientConnections
+      .map((connection) => connection.peer)
+      .toList()
+      .push(`${peerId} (HOST)`)
+      .join(", ");
+  }
+
+  function broadcast(data) {
+    clientConnections.forEach((connection) => connection.send(data));
+  }
+
+  function post(title, detail) {
+    console.log("post");
+    console.log(user);
+    const data = {
+      sender: user.id,
+      type: "feed",
+      feeds: [{ title: title, detail: detail, owner: user.id }, ...(feeds || [])],
+    };
+
+    if (hostConnection) {
+      console.log("SSS" + JSON.stringify(data));
+      hostConnection.send(data);
+    }
+
+    // host send
+    if (!clientConnections.isEmpty()) {
+      broadcast({
+        ...data,
+        peers: generatePeerList(),
+      });
+
+      updateClassData(data);
+    }
+
+    // document.getElementById("message").innerText = "";
+  }
+
+  function updateClassData(data) {
+    setFeeds(data.feeds);
+  }
   return (
     <div className="container pt-2">
+      {peerConnectionStatus === 0
+        ? "🟡"
+        : peerConnectionStatus === 1
+        ? "🟢"
+        : peerConnectionStatus === 2
+        ? "🔴"
+        : "⏺️🟢"}
+      {peerList}
       {loading ? (
         <div>loading</div>
       ) : (
         <>
           <h2>Class {classroom.name}</h2>
-          <div className="row">
+          <div className="row pl-3">
             <h5 className="pr-2">{classroom.code}</h5>
             <h6>{classId}</h6>
           </div>
@@ -59,13 +276,55 @@ export default function Class() {
           </ButtonGroup>
         </>
       )}
-      {buildTab(tab, classroom)}
+      {buildTab(tab, classroom, post, feeds)}
     </div>
   );
 }
 
-function Feed() {
-  return <div>Feed</div>;
+function Feed({ feeds, post }) {
+  const [title, setTitle] = useState("");
+  const [detail, setDetail] = useState("");
+  return (
+    <div>
+      Feed
+      {feeds ? (
+        feeds.map((feed,index) => (
+          <Card key={index} body className="mb-3">
+            <Card.Title>{feed.title}</Card.Title>
+            <Card.Subtitle className="mb-2 text-muted">
+              {feed.owner}
+            </Card.Subtitle>
+            <Card.Text>{feed.detail}</Card.Text>
+          </Card>
+        ))
+      ) : (
+        <></>
+      )}
+      <Card body>
+        <Form>
+          <Form.Group controlId="formtitle">
+            <Form.Label>Title</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder=""
+              onChange={(e) => setTitle(e.target.value)}
+            />
+          </Form.Group>
+          <Form.Group controlId="formdetail">
+            <Form.Label>Detail</Form.Label>
+            <Form.Control
+              type="text"
+              placeholder=""
+              onChange={(e) => setDetail(e.target.value)}
+            />
+          </Form.Group>
+          <Button variant="primary" onClick={() => post(title, detail)}>
+            Post
+          </Button>
+        </Form>
+      </Card>
+    </div>
+  );
 }
 
 function File() {
@@ -111,10 +370,10 @@ function Detail({ classroom }) {
   );
 }
 
-function buildTab(tab, classroom) {
+function buildTab(tab, classroom, post, feeds) {
   switch (tab) {
     case 0:
-      return <Feed />;
+      return <Feed feeds={feeds} post={post} />;
     case 1:
       return <File />;
     case 2:
