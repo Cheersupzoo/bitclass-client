@@ -15,6 +15,7 @@ import { nanoid } from "nanoid";
 import { Map } from "immutable";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
+import Storage from "../services/storage";
 var clientConnections;
 
 var hostConnection;
@@ -31,7 +32,9 @@ export default function Class() {
   const [peerList, setPeerList] = useState([]);
 
   const [peerConnectionStatus, setPeerConnectionStatus] = useState(0); // 0 = initializing; 1 = connected; 2 = disonnect; 3 = connected as Host
-  const [feeds, setFeeds] = useState([]);
+  const [feeds, setFeeds] = useState(
+    Storage.getClassStorage(classId)?.feeds || []
+  );
   useEffect(() => {
     init();
     initPeerJS();
@@ -146,6 +149,11 @@ export default function Class() {
           ...data,
           peers: generatePeerList(),
         });
+
+        broadcast({
+          type: "feed",
+          feeds: Storage.getClassStorage(classId)?.feeds || [],
+        });
       });
 
       connection.on("data", (data) => {
@@ -211,7 +219,10 @@ export default function Class() {
     const data = {
       sender: user.id,
       type: "feed",
-      feeds: [{ title: title, detail: detail, owner: user.id }, ...(feeds || [])],
+      feeds: [
+        { title: title, detail: detail, owner: user.id },
+        ...(feeds || []),
+      ],
     };
 
     if (hostConnection) {
@@ -219,14 +230,13 @@ export default function Class() {
       hostConnection.send(data);
     }
 
+    updateClassData(data);
     // host send
     if (!clientConnections.isEmpty()) {
       broadcast({
         ...data,
         peers: generatePeerList(),
       });
-
-      updateClassData(data);
     }
 
     // document.getElementById("message").innerText = "";
@@ -234,6 +244,7 @@ export default function Class() {
 
   function updateClassData(data) {
     setFeeds(data.feeds);
+    Storage.setClassStorage(classId, { feeds: data.feeds });
   }
   return (
     <div className="container pt-2">
@@ -288,7 +299,7 @@ function Feed({ feeds, post }) {
     <div>
       Feed
       {feeds ? (
-        feeds.map((feed,index) => (
+        feeds.map((feed, index) => (
           <Card key={index} body className="mb-3">
             <Card.Title>{feed.title}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">
