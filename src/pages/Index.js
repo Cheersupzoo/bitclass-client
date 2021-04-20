@@ -64,7 +64,7 @@ function WLogin() {
         >
           Create Class
         </Button>
-        <Button onClick={() => setJoinModalShow(true)} variant="warning" >Join Class</Button>
+        <Button onClick={() => setJoinModalShow(true)} variant="primary" >Join Class</Button>
         <CreateClassModal
           backdrop="static"
           show={createModalShow}

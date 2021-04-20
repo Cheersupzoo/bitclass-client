@@ -1,6 +1,6 @@
 export default class API {
-  static base_url = "http://localhost:4000"; // debug
-  // static base_url = "https://bc-server123.herokuapp.com"; // production
+  // static base_url = "http://localhost:4000"; // debug
+  static base_url = "https://bc-server123.herokuapp.com"; // production
 
   static async signin(type, token, email, name) {
     var body = {
