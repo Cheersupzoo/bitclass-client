@@ -23,9 +23,9 @@ export default class API {
     return resJson;
   }
 
-  static async getUserDetail() {
+  static async getUserDetail(id) {
     const accessToken = window.localStorage.getItem("token");
-    const res = await fetch(`${API.base_url}/auth/user`, {
+    const res = await fetch(`${API.base_url}/auth/user/${id}`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
       mode: "cors", // no-cors, *cors, same-origin
       headers: {
