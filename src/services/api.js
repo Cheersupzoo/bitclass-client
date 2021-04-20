@@ -1,6 +1,6 @@
 export default class API {
-  // static base_url = "http://localhost:4000"; // debug
-  static base_url = "https://bc-server123.herokuapp.com"; // production
+  static base_url = "http://localhost:4000"; // debug
+  // static base_url = "https://bc-server123.herokuapp.com"; // production
 
   static async signin(type, token, email, name) {
     var body = {
@@ -24,6 +24,7 @@ export default class API {
   }
 
   static async getUserDetail(id) {
+    id = id || "";
     const accessToken = window.localStorage.getItem("token");
     const res = await fetch(`${API.base_url}/auth/user/${id}`, {
       method: "GET", // *GET, POST, PUT, DELETE, etc.
