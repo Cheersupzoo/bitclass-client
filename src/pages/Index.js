@@ -3,6 +3,7 @@ import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
 import Button from "react-bootstrap/Button";
 import Modal from "react-bootstrap/Modal";
 import Form from "react-bootstrap/Form";
+import Spinner from "react-bootstrap/Spinner";
 import { useEffect, useState } from "react";
 import API from "../services/api";
 import Swal from "sweetalert2";
@@ -42,7 +43,7 @@ function WLogin() {
   const [joinModalShow, setJoinModalShow] = useState(false);
   useEffect(() => {
     init();
-    return () => {};
+    return () => { };
   }, []);
   async function init() {
     var userInfo = await API.getUserDetail();
@@ -63,7 +64,7 @@ function WLogin() {
         >
           Create Class
         </Button>
-        <Button onClick={() => setJoinModalShow(true)}>Join Class</Button>
+        <Button onClick={() => setJoinModalShow(true)} variant="warning" >Join Class</Button>
         <CreateClassModal
           backdrop="static"
           show={createModalShow}
@@ -77,7 +78,9 @@ function WLogin() {
       </div>
       <div className="row">
         {loading ? (
-          <div>loading</div>
+          <div class="mx-auto mt-5 " style={{color:"#404040"}}><Spinner animation="grow" role="status" size="sm" variant="primary">
+            <span className="sr-only">Loading...</span>
+          </Spinner>  Loading...</div>
         ) : (
           classes.map((classroom) => (
             <div key={classroom.cid} class="col-md-4">
