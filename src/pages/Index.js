@@ -77,10 +77,10 @@ function WLogin() {
         <h2 className="mr-auto" >Welcome, {name} </h2>
       </div>
       <div className="row">
-        <h5 className="mr-auto" style={{color:"#404040"}}>Study from anywhere with bitclass</h5>
+        <h6 className="mr-auto" style={{color:"#404040"}}>Study from anywhere with bitclass</h6>
       </div>
       <div className="row">
-        <h3 className="mr-auto" style={{color:"#404040"}}>Your Class</h3>
+        <h4 className="mr-auto" style={{color:"#404040"}}>Your Class</h4>
         <Button
           className="mr-2"
           variant="success"
