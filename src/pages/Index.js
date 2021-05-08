@@ -41,6 +41,7 @@ function WLogin() {
   const [classes, setClasses] = useState([]);
   const [createModalShow, setCreateModalShow] = useState(false);
   const [joinModalShow, setJoinModalShow] = useState(false);
+  const [name, setName] = useState("");
   useEffect(() => {
     init();
     return () => { };
@@ -53,10 +54,33 @@ function WLogin() {
     setClasses(classesInfo);
     setLoading(false);
   }
+
+  useEffect(() => {
+    loadUserDetail();
+    return () => {
+    }
+  }, [])
+
+  async function loadUserDetail() {
+    console.log("useEffect");
+    const accessToken = window.localStorage.getItem("token")
+    if(!(accessToken === undefined || accessToken === null)){
+      console.log(accessToken);
+      let user = await API.getUserDetail();
+      setName(user.name);
+    }
+  }
+
   return (
     <div className="container pt-4">
       <div className="row">
-        <h2 className="mr-auto">Your Class</h2>
+        <h2 className="mr-auto" >Welcome, {name} </h2>
+      </div>
+      <div className="row">
+        <h5 className="mr-auto" style={{color:"#404040"}}>Study from anywhere with bitclass</h5>
+      </div>
+      <div className="row">
+        <h3 className="mr-auto" style={{color:"#404040"}}>Your Class</h3>
         <Button
           className="mr-2"
           variant="success"
