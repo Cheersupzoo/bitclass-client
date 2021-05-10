@@ -80,7 +80,7 @@ function WLogin() {
       <div className="row">
         <h6 className="mr-auto" style={{color:"#404040"}}>Study from anywhere with bitclass</h6>
       </div>
-      <div className="row">
+      <div className="row pb-4">
         <h4 className="mr-auto" style={{color:"#404040"}}>Your Class</h4>
         <Button
           className="mr-2"
