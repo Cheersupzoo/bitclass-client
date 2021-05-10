@@ -16,6 +16,7 @@ import { Map } from "immutable";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Storage from "../services/storage";
+
 var clientConnections;
 
 var hostConnection;
@@ -265,7 +266,7 @@ export default function Class() {
             <h5 className="pr-2">{classroom.code}</h5>
             <h6>{classId}</h6>
           </div>
-          <ButtonGroup aria-label="Basic example">
+          <ButtonGroup className="mb-4" aria-label="Basic example">
             <Button
               variant={tab === 0 ? "secondary" : "primary"}
               onClick={() => setTab(0)}
@@ -297,7 +298,7 @@ function Feed({ feeds, post }) {
   const [detail, setDetail] = useState("");
   return (
     <div>
-      Feed
+      
       {feeds ? (
         feeds.map((feed, index) => (
           <Card key={index} body className="mb-3">
@@ -339,7 +340,7 @@ function Feed({ feeds, post }) {
 }
 
 function File() {
-  return <div>File</div>;
+  return <h2>Coming soon</h2>;
 }
 
 function Detail({ classroom }) {
@@ -369,9 +370,9 @@ function Detail({ classroom }) {
         <div>loading</div>
       ) : (
         <>
-          <div>Owner</div>
+          <div style={{fontSize: "20px"}}><b>Teacher</b></div>
           <div>{owner.name}</div>
-          <div>Student</div>
+          <div style={{fontSize: "20px"}}><b>Student</b></div>
           {students.map((student) => {
             return <div key={student.id}>{student.name}</div>;
           })}
