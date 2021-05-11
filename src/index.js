@@ -10,6 +10,7 @@ import reportWebVitals from "./reportWebVitals";
 import firebase from "firebase";
 import { FirebaseConfig } from "./config/firebase_config";
 import { AppWrapper } from "./state/auth";
+import './custom.scss';
 
 if (!firebase.apps.length) {
   firebase.initializeApp(FirebaseConfig.config);

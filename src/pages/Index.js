@@ -118,8 +118,8 @@ function WLogin() {
                     src={logo}
                     data-holder-rendered="true"
                   />
-                  <div class="card-body">
-                    <p class="card-text">{classroom.name}</p>
+                  <div class="card-body" style={{"background-color": "white"}}>
+                    <p class="card-text text-dark">{classroom.name}</p>
                   </div>
                 </div>
               </Link>

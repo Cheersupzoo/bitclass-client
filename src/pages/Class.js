@@ -31,6 +31,7 @@ export default function Class() {
   const [tab, setTab] = useState(0); // 0 = Feed; 1 = File; 2 = Detail
 
   const [peerList, setPeerList] = useState([]);
+  const [p2pStatus, setP2PStatus] = useState("")
 
   const [peerConnectionStatus, setPeerConnectionStatus] = useState(0); // 0 = initializing; 1 = connected; 2 = disonnect; 3 = connected as Host
   const [feeds, setFeeds] = useState(
@@ -52,6 +53,7 @@ export default function Class() {
   async function initPeerJS() {
     clientConnections = Map({});
     const accessToken = window.localStorage.getItem("token");
+    setP2PStatus("Initializing")
     if (!(accessToken === undefined || accessToken === null)) {
       console.log("set user");
       user = await API.getUserDetail();
@@ -68,7 +70,7 @@ export default function Class() {
     peer.on("open", (id) => {
       console.log("Connection to signaller establised.");
       console.log(`Assigning id: ${id}`);
-
+      setP2PStatus("Connecting to host")
       hostConnection = peer.connect(classId);
       console.log("connecting");
 
@@ -77,7 +79,7 @@ export default function Class() {
       hostConnection.on("open", () => {
         console.log(`Connection to ${hostConnection.peer} established.`);
         setPeerConnectionStatus(1); // connected
-
+        setP2PStatus("")
         hostConnection.on("data", (data) => {
           console.log("Recvied data:\n", data);
 
@@ -104,7 +106,10 @@ export default function Class() {
       console.log(error);
       setPeerConnectionStatus(2); // Disconnect
       if (error.message.includes("Could not connect to peer")) {
+        setP2PStatus("No host exist. Intialize as host")
         hostPeerSession();
+      } else {
+        setP2PStatus("Something went wrong. Please, refresh this page.")
       }
     });
   }
@@ -120,6 +125,7 @@ export default function Class() {
     });
 
     peer.on("open", (id) => {
+      setP2PStatus("")
       console.log("Connection to signaller establised.");
       console.log(`Assigning id: ${id}`);
     });
@@ -195,6 +201,7 @@ export default function Class() {
     peer.on("disconnected", () => {
       console.log("Disconnected from signaller.");
       setPeerConnectionStatus(2); // Disconnect
+      setP2PStatus("Disconnected. Refresh this page to restart.")
     });
   }
 
@@ -249,22 +256,27 @@ export default function Class() {
   }
   return (
     <div className="container pt-2">
-      {peerConnectionStatus === 0
-        ? "🟡"
-        : peerConnectionStatus === 1
-        ? "🟢"
-        : peerConnectionStatus === 2
-        ? "🔴"
-        : "⏺️🟢"}
-      {peerList}
+      <div className="row ">
+        <div className="ml-auto">
+          {peerConnectionStatus === 0
+            ? "🟡"
+            : peerConnectionStatus === 1
+            ? "🟢"
+            : peerConnectionStatus === 2
+            ? "🔴"
+            : "⏺️🟢"}
+          {/* {peerList} */}
+          <span className="ml-2">{p2pStatus}</span>
+        </div>
+      </div>
       {loading ? (
         <div>loading</div>
       ) : (
         <>
           <h2>Class {classroom.name}</h2>
           <div className="row pl-3">
-            <h5 className="pr-2">{classroom.code}</h5>
-            <h6>{classId}</h6>
+            <h5 className="pr-5">{classroom.code}</h5>
+            <h6 className="mt-auto" style={{color:"grey"}}>Join Code: {classId}</h6>
           </div>
           <ButtonGroup className="mb-4" aria-label="Basic example">
             <Button
@@ -277,13 +289,13 @@ export default function Class() {
               variant={tab === 1 ? "secondary" : "primary"}
               onClick={() => setTab(1)}
             >
-              File
+              Files
             </Button>
             <Button
               variant={tab === 2 ? "secondary" : "primary"}
               onClick={() => setTab(2)}
             >
-              Detail
+              People
             </Button>
           </ButtonGroup>
         </>
@@ -301,7 +313,7 @@ function Feed({ feeds, post }) {
       
       {feeds ? (
         feeds.map((feed, index) => (
-          <Card key={index} body className="mb-3">
+          <Card key={index} body className="mb-3" style={{"background-color": "white"}}>
             <Card.Title>{feed.title}</Card.Title>
             <Card.Subtitle className="mb-2 text-muted">
               {feed.owner}
@@ -312,8 +324,8 @@ function Feed({ feeds, post }) {
       ) : (
         <></>
       )}
-      <Card body>
-        <Form>
+      <Card body style={{"background-color": "white"}}>
+        <Form style={{"background-color": "white"}}>
           <Form.Group controlId="formtitle">
             <Form.Label>Title</Form.Label>
             <Form.Control
