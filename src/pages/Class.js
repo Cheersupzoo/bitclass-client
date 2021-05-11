@@ -15,6 +15,7 @@ import { nanoid } from "nanoid";
 import { Map } from "immutable";
 import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
+import Table from "react-bootstrap/Table";
 import Storage from "../services/storage";
 
 var clientConnections;
@@ -310,16 +311,22 @@ export default function Class() {
 function Owner({ ownerId }) {
   const [ownerName, setOwnerName] = useState("");
   useEffect(() => {
-    getOwner()
+    getOwner();
     return () => {};
   }, []);
   async function getOwner() {
     var owner = await API.getUserDetail(ownerId);
     // console.log("owner");
     // console.log(owner);
-    setOwnerName(owner.name)
+    setOwnerName(owner.name);
   }
-  return <Card.Subtitle className="mb-2 text-muted" ><span style={{color:"#b9b9b9",fontWeight:"400"}}>by {ownerName}</span></Card.Subtitle>;
+  return (
+    <Card.Subtitle className="mb-2 text-muted">
+      <span style={{ color: "#b9b9b9", fontWeight: "400" }}>
+        by {ownerName}
+      </span>
+    </Card.Subtitle>
+  );
 }
 
 function Feed({ feeds, post }) {
@@ -401,15 +408,46 @@ function Detail({ classroom }) {
         <div>loading</div>
       ) : (
         <>
-          <div style={{ fontSize: "20px" }}>
-            <b>Teacher</b>
+          <div style={{ fontSize: "25px" }}>
+            <b className="text-success">Instructor</b>
           </div>
-          <div>{owner.name}</div>
-          <div style={{ fontSize: "20px" }}>
-            <b>Student</b>
+          <hr style={{ "border-top": "1.5px solid #dd7671" }} />
+          <div>
+            <img
+              style={{ "border-radius": "25px" }}
+              width="33px"
+              className="mr-2 ml-2"
+              src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+            />
+            {owner.name}
           </div>
+          <div className="mt-4 row " style={{ fontSize: "25px" }}>
+            <b className="text-success" style={{ marginLeft: "15px" }}>
+              Student
+            </b>
+            <div
+              className="ml-auto text-success mt-auto"
+              style={{ fontSize: "16px", marginRight: "15px",fontWeight:"500" }}
+            >
+              {students.length} Students
+            </div>
+          </div>
+          <hr style={{ "border-top": "1.5px solid #dd7671" }} />
+
           {students.map((student) => {
-            return <div key={student.id}>{student.name}</div>;
+            return (
+              <div key={student.id}>
+                <img
+                  style={{ "border-radius": "25px" }}
+                  width="33px"
+                  className="mr-2 ml-2"
+                  src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+                />{" "}
+                {student.name}
+
+                <hr style={{ "border-top": "1px solid #e3dfd4" }} />
+              </div>
+            );
           })}
         </>
       )}
