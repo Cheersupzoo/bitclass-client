@@ -256,7 +256,7 @@ export default function Class() {
     Storage.setClassStorage(classId, { feeds: data.feeds });
   }
   return (
-    <div className="container pt-2">
+    <div className="container pt-2" >
       <div className="row ">
         <div className="ml-auto">
           {peerConnectionStatus === 0

@@ -12,13 +12,13 @@ export default function Home() {
   const { accessToken } = useAppContext();
 
   return (
-    <>
+    <div style={{backgroundColor:"#fef8ec"}}>
       {accessToken === undefined || accessToken === null ? (
         <WoLogin />
       ) : (
         <WLogin />
       )}
-    </>
+    </div>
   );
 }
 
@@ -72,7 +72,7 @@ function WLogin() {
   }
 
   return (
-    <div className="container pt-4">
+    <div className="container pt-4" >
       <div className="row">
         <h3 className="mr-auto" ><span style={{color:"grey",fontWeight:"400"}}>Welcome,</span> <span style={{fontWeight:"600"}}>{name} </span></h3>
       </div>

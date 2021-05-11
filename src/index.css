@@ -10,9 +10,7 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background-color: #fef8ec;
 }
-div {
-  background-color: #fef8ec;
-}
+
 
 code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
@@ -31,3 +29,4 @@ code {
 .card-subtitle {
   background-color: white;
 }
+

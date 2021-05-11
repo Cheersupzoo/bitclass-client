@@ -15,7 +15,7 @@ import Header from "./components/Header"
 export default function App() {
   return (
     <Router>
-      <div>
+      <div style={{backgroundColor:"#fef8ec"}}>
         <Header/>
 
         {/* A <Switch> looks through its children <Route>s and

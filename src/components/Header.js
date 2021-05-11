@@ -109,7 +109,7 @@ export default function Header() {
   );
 
   return (
-    <Navbar expand="lg">
+    <Navbar expand="lg" style={{"backgroundColor":"#fef8ec"}}>
       <Navbar.Brand href="/">
         <img src={logo} alt="Logo" style={{width:"30px"}} className="mr-2"/>
         <span style={{color:"#a8a39d",fontWeight:"700",fontSize:"1.05rem"}}>BitClass™</span></Navbar.Brand>
