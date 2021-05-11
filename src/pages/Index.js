@@ -24,14 +24,13 @@ export default function Home() {
 
 function WoLogin() {
   return (
-    <section class="jumbotron text-center bg-white">
+    <section class="jumbotron text-center" style={{backgroundColor:"#fef8ec"}}>
       <div class="container">
         <h1 class="jumbotron-heading">Welcome to BitClass™</h1>
         <p class="lead text-muted">
-          Something short and leading about the collection below—its contents,
-          the creator, etc. Make it short and sweet, but not too short so folks
-          don't simply skip over it entirely.
+        BitClass™ is an web application that allows teacher and student to host a class with feature such as posting feed and upload file while all the in-class data is keep between client and no private data store on the server. By using Peer-to-Peer, all the data will trasfer directly to each client so no worry that we can collect your data.
         </p>
+        <p class="lead text-muted">Protected your privacy by BitClass™</p>
       </div>
     </section>
   );
@@ -75,15 +74,15 @@ function WLogin() {
   return (
     <div className="container pt-4">
       <div className="row">
-        <h2 className="mr-auto" >Welcome, {name} </h2>
+        <h3 className="mr-auto" ><span style={{color:"grey",fontWeight:"400"}}>Welcome,</span> <span style={{fontWeight:"600"}}>{name} </span></h3>
       </div>
       <div className="row">
-        <h6 className="mr-auto" style={{color:"#404040"}}>Study from anywhere with bitclass</h6>
+        <h6 className="mr-auto" style={{color:"rgb(156 156 156)",fontWeight:"500"}}>Study from anywhere with bitclass</h6>
       </div>
       <div className="row pb-4">
-        <h4 className="mr-auto" style={{color:"#404040"}}>Your Class</h4>
+        
         <Button
-          className="mr-2"
+          className="mr-2 ml-auto"
           variant="success"
           onClick={() => setCreateModalShow(true)}
         >

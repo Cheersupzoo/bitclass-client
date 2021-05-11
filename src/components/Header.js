@@ -9,6 +9,7 @@ import firebase from "firebase";
 import { useAppContext, useDispatchContext } from "../state/auth";
 import API from "../services/api";
 import { useState, useEffect } from "react";
+import logo from "../logo.jpg"
 
 export default function Header() {
   const { accessToken } = useAppContext();
@@ -108,16 +109,18 @@ export default function Header() {
   );
 
   return (
-    <Navbar bg="light" expand="lg">
-      <Navbar.Brand href="/">BitClass™</Navbar.Brand>
+    <Navbar expand="lg">
+      <Navbar.Brand href="/">
+        <img src={logo} alt="Logo" style={{width:"30px"}} className="mr-2"/>
+        <span style={{color:"#a8a39d",fontWeight:"700",fontSize:"1.05rem"}}>BitClass™</span></Navbar.Brand>
       <Navbar.Toggle aria-controls="basic-navbar-nav" />
       <Navbar.Collapse id="basic-navbar-nav">
         <Nav className="mr-auto">
-          <Nav.Link>
-            <Link to="/">Home</Link>
+          <Nav.Link >
+            <Link style={{color:"black"}} to="/">Home</Link>
           </Nav.Link>
           <Nav.Link>
-            <Link to="/about">About</Link>
+            <Link style={{color:"black"}} to="/about">About</Link>
           </Nav.Link>
           {/* <Nav.Link>
             <Link to="/class">Class</Link>
@@ -127,7 +130,7 @@ export default function Header() {
           {!(accessToken === undefined || accessToken === null) ? (
             <>
               <span class="navbar-text pr-2">
-              {name}
+              {/* {name} */}
             </span>
               <Button variant="link" onClick={logout}>
                 Logout
