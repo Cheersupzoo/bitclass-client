@@ -12,7 +12,7 @@ export default function Home() {
   const { accessToken } = useAppContext();
 
   return (
-    <div style={{backgroundColor:"#fef8ec"}}>
+    <div style={{ backgroundColor: "#fef8ec" }}>
       {accessToken === undefined || accessToken === null ? (
         <WoLogin />
       ) : (
@@ -24,11 +24,18 @@ export default function Home() {
 
 function WoLogin() {
   return (
-    <section class="jumbotron text-center" style={{backgroundColor:"#fef8ec"}}>
+    <section
+      class="jumbotron text-center"
+      style={{ backgroundColor: "#fef8ec" }}
+    >
       <div class="container">
         <h1 class="jumbotron-heading">Welcome to BitClass™</h1>
         <p class="lead text-muted">
-        BitClass™ is an web application that allows teacher and student to host a class with feature such as posting feed and upload file while all the in-class data is keep between client and no private data store on the server. By using Peer-to-Peer, all the data will trasfer directly to each client so no worry that we can collect your data.
+          BitClass™ is an web application that allows teacher and student to
+          host a class with feature such as posting feed and upload file while
+          all the in-class data is keep between client and no private data store
+          on the server. By using Peer-to-Peer, all the data will trasfer
+          directly to each client so no worry that we can collect your data.
         </p>
         <p class="lead text-muted">Protected your privacy by BitClass™</p>
       </div>
@@ -44,7 +51,7 @@ function WLogin() {
   const [name, setName] = useState("");
   useEffect(() => {
     init();
-    return () => { };
+    return () => {};
   }, []);
   async function init() {
     var userInfo = await API.getUserDetail();
@@ -57,14 +64,13 @@ function WLogin() {
 
   useEffect(() => {
     loadUserDetail();
-    return () => {
-    }
-  }, [])
+    return () => {};
+  }, []);
 
   async function loadUserDetail() {
     console.log("useEffect");
-    const accessToken = window.localStorage.getItem("token")
-    if(!(accessToken === undefined || accessToken === null)){
+    const accessToken = window.localStorage.getItem("token");
+    if (!(accessToken === undefined || accessToken === null)) {
       console.log(accessToken);
       let user = await API.getUserDetail();
       setName(user.name);
@@ -72,15 +78,22 @@ function WLogin() {
   }
 
   return (
-    <div className="container pt-4" >
+    <div className="container pt-4">
       <div className="row">
-        <h3 className="mr-auto" ><span style={{color:"grey",fontWeight:"400"}}>Welcome,</span> <span style={{fontWeight:"600"}}>{name} </span></h3>
+        <h3 className="mr-auto">
+          <span style={{ color: "grey", fontWeight: "400" }}>Welcome,</span>{" "}
+          <span style={{ fontWeight: "600" }}>{name} </span>
+        </h3>
       </div>
       <div className="row">
-        <h6 className="mr-auto" style={{color:"rgb(156 156 156)",fontWeight:"500"}}>Study from anywhere with bitclass</h6>
+        <h6
+          className="mr-auto"
+          style={{ color: "rgb(156 156 156)", fontWeight: "500" }}
+        >
+          Study from anywhere with bitclass
+        </h6>
       </div>
       <div className="row pb-4">
-        
         <Button
           className="mr-2 ml-auto"
           variant="success"
@@ -88,7 +101,9 @@ function WLogin() {
         >
           Create Class
         </Button>
-        <Button onClick={() => setJoinModalShow(true)} variant="primary" >Join Class</Button>
+        <Button onClick={() => setJoinModalShow(true)} variant="primary">
+          Join Class
+        </Button>
         <CreateClassModal
           backdrop="static"
           show={createModalShow}
@@ -102,9 +117,27 @@ function WLogin() {
       </div>
       <div className="row">
         {loading ? (
-          <div class="mx-auto mt-5 " style={{color:"#404040"}}><Spinner animation="grow" role="status" size="sm" variant="primary">
-            <span className="sr-only">Loading...</span>
-          </Spinner>  Loading...</div>
+          <div class="mx-auto mt-5 " style={{ color: "#404040" }}>
+            <Spinner animation="grow" role="status" size="sm" variant="primary">
+              <span className="sr-only">Loading...</span>
+            </Spinner>{" "}
+            Loading...
+          </div>
+        ) : classes.length === 0 ? (
+          <div className="mx-auto mt-5">
+            <Button
+              className="mr-2 ml-auto"
+              variant="success"
+              onClick={() => setCreateModalShow(true)}
+            >
+              Create Class
+            </Button>
+            or &nbsp;
+            <Button onClick={() => setJoinModalShow(true)} variant="primary">
+              Join Class
+            </Button>{" "}
+            &nbsp; to start using BitClass™
+          </div>
         ) : (
           classes.map((classroom) => (
             <div key={classroom.cid} class="col-md-4">
@@ -118,7 +151,10 @@ function WLogin() {
                     src={logo}
                     data-holder-rendered="true"
                   />
-                  <div class="card-body" style={{"background-color": "white"}}>
+                  <div
+                    class="card-body"
+                    style={{ "background-color": "white" }}
+                  >
                     <p class="card-text text-dark">{classroom.name}</p>
                   </div>
                 </div>

@@ -43,7 +43,8 @@ export default class API {
   static async getClassesDetail(classIds) {
     const accessToken = window.localStorage.getItem("token");
     var classes = [];
-    await Promise.all(
+    if(classIds)
+    {await Promise.all(
       classIds.map(async (cid) => {
         const res = await fetch(`${API.base_url}/class/${cid}`, {
           method: "GET", // *GET, POST, PUT, DELETE, etc.
@@ -56,7 +57,7 @@ export default class API {
         var resJson = await res.json();
         classes.push(resJson.data);
       })
-    );
+    );}
 
     // var deck = plainToClass(Deck, resJson.data)
     console.log(classes);
