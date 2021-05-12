@@ -256,7 +256,7 @@ export default function Class() {
     Storage.setClassStorage(classId, { feeds: data.feeds });
   }
   return (
-    <div className="container pt-2" >
+    <div className="container pt-2">
       <div className="row ">
         <div className="ml-auto">
           {peerConnectionStatus === 0
@@ -412,14 +412,17 @@ function Detail({ classroom }) {
             <b className="text-success">Instructor</b>
           </div>
           <hr style={{ "border-top": "1.5px solid #dd7671" }} />
-          <div>
+          <div className="row mr-2 ml-2">
             <img
               style={{ "border-radius": "25px" }}
               width="33px"
-              className="mr-2 ml-2"
+              className="mr-3 ml-2"
               src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
             />
-            {owner.name}
+            <div className="my-auto">{owner.name}</div>
+            <div className="ml-auto my-auto mr-4" style={{ color: "#bdbdbd" }}>
+              {owner.email}
+            </div>
           </div>
           <div className="mt-4 row " style={{ fontSize: "25px" }}>
             <b className="text-success" style={{ marginLeft: "15px" }}>
@@ -427,7 +430,11 @@ function Detail({ classroom }) {
             </b>
             <div
               className="ml-auto text-success mt-auto"
-              style={{ fontSize: "16px", marginRight: "15px",fontWeight:"500" }}
+              style={{
+                fontSize: "16px",
+                marginRight: "15px",
+                fontWeight: "500",
+              }}
             >
               {students.length} Students
             </div>
@@ -437,14 +444,21 @@ function Detail({ classroom }) {
           {students.map((student) => {
             return (
               <div key={student.id}>
-                <img
-                  style={{ "border-radius": "25px" }}
-                  width="33px"
-                  className="mr-2 ml-2"
-                  src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
-                />{" "}
-                {student.name}
-
+                <div className="row mr-2 ml-2">
+                  <img
+                    style={{ "border-radius": "25px" }}
+                    width="33px"
+                    className="mr-3 ml-2"
+                    src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png"
+                  />{" "}
+                  <div className="my-auto">{student.name}</div>
+                  <div
+                    className="ml-auto my-auto mr-4"
+                    style={{ color: "#bdbdbd" }}
+                  >
+                    {student.email}
+                  </div>
+                </div>
                 <hr style={{ "border-top": "1px solid #e3dfd4" }} />
               </div>
             );
