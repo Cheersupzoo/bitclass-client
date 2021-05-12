@@ -17,6 +17,7 @@ import Form from "react-bootstrap/Form";
 import Card from "react-bootstrap/Card";
 import Table from "react-bootstrap/Table";
 import Storage from "../services/storage";
+import construct from "../construct.svg";
 
 var clientConnections;
 
@@ -378,7 +379,12 @@ function Feed({ feeds, post }) {
 }
 
 function File() {
-  return <h2>Coming soon</h2>;
+  return (
+    <div>
+      <div className="row"><h2 className="mx-auto mb-4">Coming soon</h2></div>
+      <div className="row"><img width="200px" src={construct} className="mx-auto" /></div>
+    </div>
+  );
 }
 
 function Detail({ classroom }) {
