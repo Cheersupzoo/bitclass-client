@@ -59,7 +59,7 @@ export default function Class() {
     if (!(accessToken === undefined || accessToken === null)) {
       console.log("set user");
       user = await API.getUserDetail();
-      peerId = user.id;
+      // peerId = user.id;
     }
 
     peer = new Peer(peerId, {
