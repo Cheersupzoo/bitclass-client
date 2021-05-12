@@ -22,7 +22,7 @@ var clientConnections;
 
 var hostConnection;
 
-var peerId = "000";
+var peerId = nanoid(6);
 var peer;
 var user = {};
 export default function Class() {
